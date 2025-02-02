@@ -1,118 +1,106 @@
-// Tempos em segundos
-const time = 25 * 60; // 25 minutos
-const shortTime = 5 * 60; // 5 minutos
-const longTime = 15 * 60; // 15 minutos
+const time = 25 * 60; 
+const shortTime = 5 * 60; 
+const longTime = 15 * 60; 
 
-// Variáveis de controle
-let currentTime = time; // Tempo atual, começando com o Pomodoro
-let isRunning = false;  // Estado de execução
-let isPomodoro = true;  // Controla se está no Pomodoro ou no intervalo
-let intervalId = null; // Armazena o identificador do setInterval
+let currentTime = time; 
+let isRunning = false;  
+let isPomodoro = true;  
+let intervalId = null; 
 
-// Função para iniciar ou pausar o timer
 function startTimer() {
     const startPauseBtn = document.getElementById('startPauseBtn');
     
     if (isRunning) {
-        clearInterval(intervalId); // Pausa o timer
+        clearInterval(intervalId); 
         isRunning = false;
-        startPauseBtn.textContent = 'Iniciar'; // Muda o texto do botão
+        startPauseBtn.textContent = 'Iniciar'; 
     } else {
         intervalId = setInterval(function() {
-            currentTime--; // Diminui o tempo
-            updateDisplay(); // Atualiza a interface com o tempo restante
+            currentTime--; 
+            updateDisplay(); 
 
             if (currentTime <= 0) {
-                clearInterval(intervalId); // Para o timer
+                clearInterval(intervalId); 
                 isRunning = false;
-                nextStage(); // Avança para o próximo estágio
+                nextStage(); 
             }
-        }, 1000); // A cada 1 segundo
+        }, 1000); 
         isRunning = true;
-        startPauseBtn.textContent = 'Pausar'; // Muda o texto para Pausar
+        startPauseBtn.textContent = 'Pausar'; 
     }
 }
 
-// Função para avançar para o próximo estágio (Pomodoro <-> Intervalo)
 function nextStage() {
     const timerSelect = document.getElementById('timerSelect');
 
     if (isPomodoro) {
-        if (isRunning) clearInterval(intervalId); // Pausa o timer
+        if (isRunning) clearInterval(intervalId); 
         isPomodoro = false;
-        currentTime = shortTime; // Muda para o intervalo curto
-        timerSelect.value = "shortBreak"; // Atualiza o menu de seleção
+        currentTime = shortTime; 
+        timerSelect.value = "shortBreak"; 
     } else {
-        if (isRunning) clearInterval(intervalId); // Pausa o timer
+        if (isRunning) clearInterval(intervalId); 
         isPomodoro = true;
-        currentTime = time; // Volta para o Pomodoro
-        timerSelect.value = "pomodoro"; // Atualiza o menu de seleção
+        currentTime = time; 
+        timerSelect.value = "pomodoro"; 
     }
-    updateDisplay(); // Atualiza o display
+    updateDisplay(); 
 }
 
-// Função para resetar o timer
 function resetTimer() {
-    clearInterval(intervalId); // Para o timer
+    clearInterval(intervalId); 
     isRunning = false;
-    currentTime = time; // Reseta para o tempo do Pomodoro
-    isPomodoro = true; // Inicia no Pomodoro
-    updateDisplay(); // Atualiza o display
+    currentTime = time; 
+    isPomodoro = true; 
+    updateDisplay(); 
     const startPauseBtn = document.getElementById('startPauseBtn');
-    startPauseBtn.textContent = 'Iniciar'; // Restaura o texto do botão para "Iniciar"
+    startPauseBtn.textContent = 'Iniciar'; 
     const timerSelect = document.getElementById('timerSelect');
-    timerSelect.value = "pomodoro"; // Atualiza o menu de seleção
+    timerSelect.value = "pomodoro"; 
 }
 
-// Função para atualizar o display
 function updateDisplay() {
-    const minutes = Math.floor(currentTime / 60); // Converte para minutos
-    const seconds = currentTime % 60; // Converte para segundos
+    const minutes = Math.floor(currentTime / 60); 
+    const seconds = currentTime % 60; 
     const timerDisplay = document.getElementById('timer');
-    timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`; // Exibe o tempo
+    timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`; 
 }
 
-// Função chamada ao mudar o valor do select
 function changeTimer() {
     const timerSelect = document.getElementById('timerSelect');
-    const selectedValue = timerSelect.value; // Pega o valor selecionado
+    const selectedValue = timerSelect.value; 
 
-    // Atualiza o tempo de acordo com a opção selecionada
     if (selectedValue === "pomodoro") {
-        currentTime = time; // 25 minutos
-        isPomodoro = true; // Define como Pomodoro
+        currentTime = time; 
+        isPomodoro = true; 
     } else if (selectedValue === "shortBreak") {
-        currentTime = shortTime; // 5 minutos
-        isPomodoro = false; // Define como intervalo curto
+        currentTime = shortTime; 
+        isPomodoro = false; 
     } else if (selectedValue === "longBreak") {
-        currentTime = longTime; // 15 minutos
-        isPomodoro = false; // Define como intervalo longo
+        currentTime = longTime; 
+        isPomodoro = false; 
     }
     
-    updateDisplay(); // Atualiza o display com o novo tempo
+    updateDisplay(); 
     if (isRunning) {
-        clearInterval(intervalId); // Se o timer estava rodando, pausa
+        clearInterval(intervalId); 
         isRunning = false;
         const startPauseBtn = document.getElementById('startPauseBtn');
-        startPauseBtn.textContent = 'Iniciar'; // Restaura o texto do botão para "Iniciar"
+        startPauseBtn.textContent = 'Iniciar'; 
     }
 }
 
 function updateClock() {
-    const now = new Date(); // Pega a data e hora atuais
-    let hours = now.getHours(); // Pega as horas
-    let minutes = now.getMinutes(); // Pega os minutos
+    const now = new Date(); 
+    let hours = now.getHours(); 
+    let minutes = now.getMinutes(); 
 
-    // Adiciona um zero na frente dos minutos se for menor que 10
     minutes = minutes < 10 ? '0' + minutes : minutes;
 
-    // Exibe a hora e os minutos no formato "HH:MM"
     const clockDisplay = document.getElementById('clock');
     clockDisplay.textContent = `${hours}:${minutes}`;
 }
 
-// Chama a função a cada 60 segundos para atualizar a hora
 setInterval(updateClock, 60000);
 
-// Chama a função imediatamente para mostrar a hora logo que carregar a página
 updateClock();
